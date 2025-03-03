@@ -1,37 +1,44 @@
 ﻿using System;
 using DevEn.Xrm.Observables;
+using DevEn.Xrm.Observables.Extensions;
 using Microsoft.Xrm.Sdk;
 
 namespace Demo;
 
 internal static class Program
 {
-    //internal static void Main()
-    //{
-    //    var observableEntity = ObservableEntity.Create("account");
-    //    using (observableEntity.Subscribe(
-    //               onNext: kvp => Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}"),
-    //               onError: ex => Console.WriteLine($"Error: {ex.Message}"),
-    //               onCompleted: () => Console.WriteLine("Observation complete."))
-    //          )
-    //    {
-    //        observableEntity.TryGetOrAdd("Apples", 10);
-    //        observableEntity.TryAddOrUpdate("Oranges", 5);
-    //        observableEntity.TryUpdate("Apples", 15);
-    //        observableEntity.TryDelete("Oranges");
+    internal static void Main()
+    {
+        MainOne();
+        MainTwo();
+    }
 
-    //        Console.WriteLine("JSON representation:");
-    //        Console.WriteLine(observableEntity.Json());
-    //    }
+    internal static void MainOne()
+    {
+        var observableEntity = ObservableEntity.Create("account");
+        using (observableEntity.Subscribe(
+                   onNext: kvp => Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}"),
+                   onError: ex => Console.WriteLine($"Error: {ex.Message}"),
+                   onCompleted: () => Console.WriteLine("Observation complete."))
+              )
+        {
+            observableEntity.TryGetOrAdd("Apples", 10);
+            observableEntity.TryAddOrUpdate("Oranges", 5);
+            observableEntity.TryUpdate("Apples", 15);
+            observableEntity.TryDelete("Oranges");
 
-    //    observableEntity.TryAddOrUpdate("Bananas", 7);
-    //    Console.WriteLine("Finished operations without memory leaks.");
+            Console.WriteLine("JSON representation:");
+            Console.WriteLine(observableEntity.Json());
+        }
 
-    //    Entity entity = observableEntity;
-    //    var newObservableEntity = entity.ToObservable();
-    //}
+        observableEntity.TryAddOrUpdate("Bananas", 7);
+        Console.WriteLine("Finished operations without memory leaks.");
 
-    private static void Main()
+        Entity entity = observableEntity;
+        var newObservableEntity = entity.ToObservable();
+    }
+
+    private static void MainTwo()
     {
         var entity = ObservableEntityAttributes.Create("account");
 
@@ -43,6 +50,7 @@ internal static class Program
         entity["key1"] = 42;
         entity.SetAttributeValue("key1", 100);
         entity.Attributes["key1"] = 150;
+        entity["key99"] = 99;
 
         subscription.Dispose();
     }
