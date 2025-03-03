@@ -37,20 +37,14 @@ internal static class Program
 
         // Sottoscrizione a "key1"
         var subscription = entity
-            .Observe<int>("key1")
+            .Observe("key1")
             .Subscribe(x => Console.WriteLine($"🔔 Valore aggiornato: {x}"));
 
-        // Modifiche che devono essere intercettate
-        entity["key1"] = 42; // Deve notificare "🔔 Valore aggiornato: 42"
-        entity.SetAttributeValue("key1", 100); // Deve notificare "🔔 Valore aggiornato: 100"
-        entity.Attributes["key1"] = 150; // Deve notificare "🔔 Valore aggiornato: 150"
+        entity["key1"] = 42;
+        entity.SetAttributeValue("key1", 100);
+        entity.Attributes["key1"] = 150;
 
-        // Aspettiamo per osservare i risultati
-        System.Threading.Thread.Sleep(1000);
-
-        // Chiudiamo la sottoscrizione
         subscription.Dispose();
-
     }
 
     internal static void UpdateKey99(Entity entity, int value)
