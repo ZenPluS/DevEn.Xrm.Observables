@@ -2,79 +2,112 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevEn.Xrm.Observables
 {
-    public class ObservableEntityAttributes
-        : Entity
+    public sealed class ObservableEntityAttributes : Entity
     {
-        private readonly Dictionary<string, BehaviorSubject<object>> _subjects = new();
+        private readonly Dictionary<string, object> _subjects = new();
 
-        public void Add<T>(string key, T value)
-        {
-            if (!_subjects.ContainsKey(key))
-            {
-                _subjects[key] = new BehaviorSubject<object>(value);
-            }
-            Attributes[key] = value;
+        // Usiamo un dizionario osservabile per intercettare le modifiche
+        private readonly ObservableDictionary<string, object> _attributesWrapper;
+
+        private ObservableEntityAttributes(string entityName) : base(entityName) 
+        { 
+            _attributesWrapper = new ObservableDictionary<string, object>();
+            _attributesWrapper.ValueChanged += OnAttributeChanged;
         }
+
+        private ObservableEntityAttributes(Entity entity) : base(entity.LogicalName, entity.Id)
+        {
+            _attributesWrapper = new ObservableDictionary<string, object>(entity.Attributes);
+            _attributesWrapper.ValueChanged += OnAttributeChanged;
+            EntityState = entity.EntityState;
+            FormattedValues = entity.FormattedValues;
+            RelatedEntities = entity.RelatedEntities;
+            RowVersion = entity.RowVersion;
+        }
+
+        public static ObservableEntityAttributes Create(Entity entity) => new(entity);
+        public static ObservableEntityAttributes Create(string entityName) => new(entityName);
+
+        public override Dictionary<string, object> Attributes => _attributesWrapper;
 
         public new object this[string key]
         {
-            get => base[key];
+            get => Attributes.ContainsKey(key) ? Attributes[key] : null;
             set => SetAndNotify(key, value);
         }
 
-        public void Update<T>(string key, T value)
+        public void Add<T>(string key, T value)
         {
-            if (_subjects.TryGetValue(key, out var subject))
-            {
-                ((BehaviorSubject<object>)subject).OnNext(value); // Notify observers of change
-            }
-            Attributes[key] = value;
+            SetAndNotify(key, value);
         }
 
         private void SetAndNotify(string key, object value)
         {
-            base[key] = value;
+            _attributesWrapper[key] = value;
+        }
 
-            if (_subjects.TryGetValue(key, out var observable))
+        private void OnAttributeChanged(string key, object value)
+        {
+            if (_subjects.TryGetValue(key, out var subject) && subject is ISubject<object> typedSubject)
             {
-                ((BehaviorSubject<object>)observable).OnNext(value);
+                typedSubject.OnNext(value);
             }
             else
             {
-                _subjects[key] = new BehaviorSubject<object>(value);
+                var newSubject = new BehaviorSubject<object>(value);
+                _subjects[key] = newSubject;
             }
         }
 
-        public IObservable<object> Observe<T>(string key)
+        public IObservable<T> Observe<T>(string key)
         {
-            if (!_subjects.TryGetValue(key, out var observe))
+            if (!_subjects.TryGetValue(key, out var subject))
             {
-                return null;
+                var newSubject = new BehaviorSubject<object>(default(T)!);
+                _subjects[key] = newSubject;
+                return newSubject.Cast<T>();
             }
 
-            return observe as IObservable<object>;
+            return subject is IObservable<object> observable
+                ? observable.Cast<T>()
+                : Observable.Empty<T>();
         }
 
         public override T GetAttributeValue<T>(string key)
         {
-            if (Attributes.TryGetValue(key, out var value) && value is T typedValue)
-            {
-                return typedValue;
-            }
-            return default!;
+            return Attributes.TryGetValue(key, out var value) && value is T typedValue ? typedValue : default!;
         }
 
         public void SetAttributeValue<T>(string key, T value)
         {
             SetAndNotify(key, value!);
         }
+    }
 
-        public Entity ToEntity() => this;
+    /// <summary>
+    /// Dizionario che notifica ogni modifica ai valori
+    /// </summary>
+    public class ObservableDictionary<TKey, TValue> : Dictionary<TKey, TValue>
+    {
+        public event Action<TKey, TValue> ValueChanged;
+
+        public ObservableDictionary() : base() { }
+
+        public ObservableDictionary(IDictionary<TKey, TValue> dictionary) : base(dictionary) { }
+
+        public new TValue this[TKey key]
+        {
+            get => base[key];
+            set
+            {
+                base[key] = value;
+                ValueChanged?.Invoke(key, value);
+            }
+        }
     }
 }
