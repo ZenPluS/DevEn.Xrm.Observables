@@ -8,10 +8,12 @@ class Program
 {
     static void Main()
     {
-        var entity = new Entity("account");
-        entity["name"] = "Test";
-        entity["int1"] = 10;
-        entity["int2"] = 20;
+        var entity = new Entity("account")
+        {
+            ["name"] = "Test",
+            ["int1"] = 10,
+            ["int2"] = 20
+        };
         var observableAccount = ObservableEntity<Entity>.Create(entity);
         observableAccount.Subscribe("name", () => DoSomething(observableAccount));
 
