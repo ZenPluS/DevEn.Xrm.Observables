@@ -6,8 +6,6 @@ using Microsoft.Xrm.Sdk;
 
 namespace DevEn.Xrm.Observables;
 
-
-
 /// <summary>
 /// Represents an observable entity that tracks changes to its attributes and allows subscribing to attribute changes.
 /// </summary>

@@ -15,7 +15,7 @@ class Program
             ["int2"] = 20
         };
         var observableAccount = ObservableEntity<Entity>.Create(entity);
-        observableAccount.AddOnChange("name", () => DoSomething(observableAccount));
+        observableAccount.AddOnChange("name", () => DoSomething(observableAccount), () => { });
 
         Console.WriteLine(observableAccount["int3"]);
         observableAccount.SetValue("name", "TestUpdate");
