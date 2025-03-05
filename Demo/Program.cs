@@ -15,7 +15,7 @@ class Program
         var observableAccount = ObservableEntity<Entity>.Create(entity);
         observableAccount.Subscribe("name", () =>
         {
-            DoSomething(entity);
+            DoSomething(observableAccount);
         });
 
         Console.WriteLine(observableAccount["int3"]);

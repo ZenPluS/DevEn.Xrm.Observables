@@ -37,6 +37,12 @@ public class ObservableEntity<TEntity>
         }
     }
 
+    public static implicit operator Entity(ObservableEntity<TEntity> observableEntity)
+        => observableEntity.GetEntity();
+
+    public static implicit operator ObservableEntity<TEntity>(TEntity entity)
+        => Create(entity);
+
     /// <summary>
     /// Invokes all subscribed delegates for the tracked attributes.
     /// </summary>
