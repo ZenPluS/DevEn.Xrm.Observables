@@ -15,13 +15,13 @@ class Program
             ["int2"] = 20
         };
         var observableAccount = ObservableEntity<Entity>.Create(entity);
-        observableAccount.Subscribe("name", () => DoSomething(observableAccount));
+        observableAccount.AddOnChange("name", () => DoSomething(observableAccount));
 
         Console.WriteLine(observableAccount["int3"]);
         observableAccount.SetValue("name", "TestUpdate");
         Console.WriteLine(observableAccount["int3"]);
 
-        observableAccount.InvokeAll();
+        observableAccount.InvokeAllOnChange();
 
         ObservableEntity<Entity> a = "account";
     }
