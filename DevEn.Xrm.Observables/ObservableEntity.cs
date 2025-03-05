@@ -13,7 +13,7 @@ public class ObservableEntity<TEntity>
     where TEntity : Entity
 {
     private readonly HashSet<string> _trackedKeys = new(new List<string>(), StringComparer.OrdinalIgnoreCase);
-    private readonly IDictionary<string, Delegate> _actionOnTrack = new Dictionary<string, Delegate>();
+    private readonly IDictionary<string, Delegate> _delegateOnTrackUpdate = new Dictionary<string, Delegate>();
     private readonly TEntity _entity;
 
     /// <summary>
@@ -27,7 +27,7 @@ public class ObservableEntity<TEntity>
         set
         {
             var isContains = _trackedKeys.Contains(attributeName);
-            var currentDelegate = isContains ? _actionOnTrack[attributeName] : null;
+            var currentDelegate = isContains ? _delegateOnTrackUpdate[attributeName] : null;
             _entity[attributeName] = value;
 
             if (isContains)
@@ -46,7 +46,7 @@ public class ObservableEntity<TEntity>
         entityKeys.ForEach(key =>
         {
             var isContains = _trackedKeys.Contains(key);
-            var currentDelegate = isContains ? _actionOnTrack[key] : null;
+            var currentDelegate = isContains ? _delegateOnTrackUpdate[key] : null;
             if (isContains)
             {
                 currentDelegate?.DynamicInvoke();
@@ -60,7 +60,7 @@ public class ObservableEntity<TEntity>
     public void Invoke(string key)
     {
         var isContains = _trackedKeys.Contains(key);
-        var currentDelegate = isContains ? _actionOnTrack[key] : null;
+        var currentDelegate = isContains ? _delegateOnTrackUpdate[key] : null;
         if (isContains)
         {
             currentDelegate?.DynamicInvoke();
@@ -85,7 +85,14 @@ public class ObservableEntity<TEntity>
     /// <returns>The current instance of <see cref="ObservableEntity{TEntity}"/>.</returns>
     public ObservableEntity<TEntity> SetValue<T>(string key, T value)
     {
+        var isContains = _trackedKeys.Contains(key);
+        var currentDelegate = isContains ? _delegateOnTrackUpdate[key] : null;
         _entity[key] = value;
+
+        if (isContains)
+        {
+            currentDelegate?.DynamicInvoke();
+        }
         return this;
     }
 
@@ -142,7 +149,7 @@ public class ObservableEntity<TEntity>
             return;
 
         _trackedKeys.Add(key);
-        _actionOnTrack.Add(key, onChange);
+        _delegateOnTrackUpdate.Add(key, onChange);
     }
 
     /// <summary>
@@ -152,7 +159,7 @@ public class ObservableEntity<TEntity>
     public void UnSubscribe(string key)
     {
         _trackedKeys.Remove(key);
-        if (_actionOnTrack.ContainsKey(key))
-            _actionOnTrack.Remove(key);
+        if (_delegateOnTrackUpdate.ContainsKey(key))
+            _delegateOnTrackUpdate.Remove(key);
     }
 }

@@ -15,11 +15,18 @@ class Program
         var observableAccount = ObservableEntity<Entity>.Create(entity);
         observableAccount.Subscribe("name", () =>
         {
-            observableAccount["int3"] = observableAccount.GetValue<int>("int1") * observableAccount.GetValue<int>("int2");
+            DoSomething(entity);
         });
 
         Console.WriteLine(observableAccount["int3"]);
         observableAccount.SetValue("name", "TestUpdate");
         Console.WriteLine(observableAccount["int3"]);
+
+        observableAccount.InvokeAll();
+    }
+
+    public static void DoSomething(Entity entity)
+    {
+        entity["int3"] = entity.GetAttributeValue<int>("int1") * entity.GetAttributeValue<int>("int2");
     }
 }
