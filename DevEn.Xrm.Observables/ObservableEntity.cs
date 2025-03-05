@@ -148,7 +148,7 @@ public class ObservableEntity<TEntity>
     /// Subscribes to changes of the specified attribute.
     /// </summary>
     /// <param name="key">The name of the attribute.</param>
-    /// <param name="onChange">The delegate to invoke when the attribute changes.</param>
+    /// <param name="onChange">The delegate to invoke when the attribute value change</param>
     public void Subscribe(string key, Delegate onChange)
     {
         if (key == null || onChange == null)

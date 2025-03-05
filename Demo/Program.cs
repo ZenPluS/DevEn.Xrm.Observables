@@ -13,10 +13,7 @@ class Program
         entity["int1"] = 10;
         entity["int2"] = 20;
         var observableAccount = ObservableEntity<Entity>.Create(entity);
-        observableAccount.Subscribe("name", () =>
-        {
-            DoSomething(observableAccount);
-        });
+        observableAccount.Subscribe("name", () => DoSomething(observableAccount));
 
         Console.WriteLine(observableAccount["int3"]);
         observableAccount.SetValue("name", "TestUpdate");
