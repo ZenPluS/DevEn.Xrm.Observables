@@ -22,6 +22,8 @@ class Program
         Console.WriteLine(observableAccount["int3"]);
 
         observableAccount.InvokeAll();
+
+        ObservableEntity<Entity> a = "account";
     }
 
     public static void DoSomething(Entity entity)

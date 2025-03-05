@@ -43,7 +43,7 @@ public class ObservableEntity<TEntity>
     public static implicit operator ObservableEntity<TEntity>(TEntity entity)
         => Create(entity);
 
-    public static explicit operator ObservableEntity<TEntity>(string logicalName)
+    public static implicit operator ObservableEntity<TEntity>(string logicalName)
         => (TEntity)Create(logicalName);
 
     /// <summary>
