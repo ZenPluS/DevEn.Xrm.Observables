@@ -8,9 +8,6 @@ DevEn.Xrm.Observables is a library that provides an observable entity class for 
 - Subscribe to attribute changes with delegates.
 - Implicit conversions between `ObservableEntity` and `Entity`.
 
-## Installation
-
-To install DevEn.Xrm.Observables, add the following package to your project:
 ## Usage
 
 ### Creating an Observable Entity
@@ -40,6 +37,3 @@ The library includes unit tests to ensure the functionality of the `ObservableEn
 The library also includes integration tests to ensure the overall functionality of the `ObservableEntity` class.
 
 ### Implicit Conversions
-## License
-
-This project is licensed under the MIT License
