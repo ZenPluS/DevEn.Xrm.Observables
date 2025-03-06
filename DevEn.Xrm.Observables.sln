@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevEn.Xrm.Observables", "De
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{64059731-AF83-4E6F-87FF-DC5B8724735B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevEn.Xrm.Observables.UnitTest", "DevEn.Xrm.Observables.UnitTest\DevEn.Xrm.Observables.UnitTest.csproj", "{E0179CA7-29B7-41C8-A238-67C08502FBF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{64059731-AF83-4E6F-87FF-DC5B8724735B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64059731-AF83-4E6F-87FF-DC5B8724735B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64059731-AF83-4E6F-87FF-DC5B8724735B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0179CA7-29B7-41C8-A238-67C08502FBF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0179CA7-29B7-41C8-A238-67C08502FBF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0179CA7-29B7-41C8-A238-67C08502FBF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0179CA7-29B7-41C8-A238-67C08502FBF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

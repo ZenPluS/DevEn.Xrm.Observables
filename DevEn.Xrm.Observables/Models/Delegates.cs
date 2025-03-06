@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevEn.Xrm.Observables.Models
 {
-    internal class Delegates : IEnumerable<Delegate>
+    internal class Delegates(IEnumerable<Delegate> delegates)
+        : IEnumerable<Delegate>
     {
+        private readonly List<Delegate> _delegates = [..delegates];
+
         public static implicit operator Delegates(Delegate[] lst)
-            => lst;
+            => new(lst);
 
         public IEnumerator<Delegate> GetEnumerator()
-            => new List<Delegate>.Enumerator();
+            => _delegates.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
-            =>  new List<Delegate>.Enumerator();
+            => GetEnumerator();
     }
 }
