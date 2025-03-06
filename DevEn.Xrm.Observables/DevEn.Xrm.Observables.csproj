@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\IObservableEntity.cs" />
+    <Compile Include="Models\Delegates.cs" />
     <Compile Include="ObservableEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

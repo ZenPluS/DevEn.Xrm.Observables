@@ -3,7 +3,8 @@ using System;
 
 namespace DevEn.Xrm.Observables.Core;
 
-public interface IObservableEntity<TEntity> where TEntity : Entity
+public interface IObservableEntity<TEntity>
+    where TEntity : Entity
 {
     /// <summary>
     /// Gets or sets the value of the specified attribute.

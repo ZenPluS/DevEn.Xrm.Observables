@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DevEn.Xrm.Observables.Core;
+using DevEn.Xrm.Observables.Models;
 using Microsoft.Xrm.Sdk;
 
 namespace DevEn.Xrm.Observables;
@@ -10,12 +11,12 @@ namespace DevEn.Xrm.Observables;
 /// Represents an observable entity that tracks changes to its attributes and allows subscribing to attribute changes.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
-public sealed class ObservableEntity<TEntity>
-    : IObservableEntity<TEntity>
+public sealed class ObservableEntity<TEntity> :
+    IObservableEntity<TEntity>
     where TEntity : Entity
 {
-    private readonly HashSet<string> _trackedKeys = new(new List<string>(), StringComparer.OrdinalIgnoreCase);
-    private readonly IDictionary<string, List<Delegate>> _delegatesOnChange = new Dictionary<string, List<Delegate>>();
+    private readonly HashSet<string> _trackedKeys = new(StringComparer.OrdinalIgnoreCase);
+    private readonly IDictionary<string, Delegates> _delegatesOnChange = new Dictionary<string, Delegates>();
     private readonly TEntity _entity;
 
     /// <inheritdoc />
@@ -35,7 +36,9 @@ public sealed class ObservableEntity<TEntity>
 
             if (isContains)
             {
-                currentDelegate.ForEach(d => d?.DynamicInvoke());
+                currentDelegate
+                    .ToList()
+                    .ForEach(d => d?.DynamicInvoke());
             }
         }
     }
@@ -62,7 +65,9 @@ public sealed class ObservableEntity<TEntity>
             var currentDelegate = isContains ? _delegatesOnChange[key] : null;
             if (isContains)
             {
-                currentDelegate.ForEach(d => d?.DynamicInvoke());
+                currentDelegate
+                    .ToList()
+                    .ForEach(d => d?.DynamicInvoke());
             }
         });
     }
@@ -77,7 +82,9 @@ public sealed class ObservableEntity<TEntity>
         var currentDelegate = isContains ? _delegatesOnChange[key] : null;
         if (isContains)
         {
-            currentDelegate.ForEach(d => d?.DynamicInvoke());
+            currentDelegate
+                .ToList()
+                .ForEach(d => d?.DynamicInvoke());
         }
     }
 
@@ -107,7 +114,9 @@ public sealed class ObservableEntity<TEntity>
 
         if (isContains)
         {
-            currentDelegate.ForEach(d => d?.DynamicInvoke());
+            currentDelegate
+                .ToList()
+                .ForEach(d => d?.DynamicInvoke());
         }
         return this;
     }
@@ -171,7 +180,7 @@ public sealed class ObservableEntity<TEntity>
             return;
 
         _trackedKeys.Add(key);
-        _delegatesOnChange.Add(key, onChange.ToList());
+        _delegatesOnChange.Add(key, onChange);
     }
 
     /// <inheritdoc />
